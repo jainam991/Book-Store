@@ -160,6 +160,10 @@ def init_db():
         theme TEXT DEFAULT 'Light',
         brightness INTEGER DEFAULT 100
     );
+
+    CREATE TABLE IF NOT EXISTS seed_lock (
+        id INTEGER PRIMARY KEY
+    );
     """)
     conn.commit()
 
@@ -184,6 +188,49 @@ def now():
 
 def hash_password(pw):
     return hashlib.sha256(pw.encode()).hexdigest()
+
+
+# ---------- SEEDING / RESET GUARDS ----------
+def try_acquire_seed_lock():
+    """
+    Atomic guard so concurrent sessions on first load can't both seed demo
+    data. SQLite serializes writes across connections/processes, so only one
+    caller's INSERT can win a primary-key collision on id=1 — the rest get
+    an IntegrityError and back off. Returns True only for the winner.
+    """
+    conn = get_conn()
+    try:
+        conn.execute("INSERT INTO seed_lock (id) VALUES (1)")
+        conn.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conn.close()
+
+
+def get_author_by_name(name):
+    conn = get_conn()
+    row = conn.execute("SELECT * FROM authors WHERE name = ?", (name,)).fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
+def factory_reset_catalog():
+    """
+    Wipes all catalog/activity data (books, authors, purchases, library,
+    wishlist, reviews, bookmarks, highlights, notifications, seed lock) but
+    keeps user accounts and categories, then lets seed_demo repopulate
+    cleanly. Used by the admin 'danger zone' to recover from duplicated /
+    inconsistent demo data without redeploying.
+    """
+    conn = get_conn()
+    for table in ["books", "authors", "purchases", "library", "wishlist",
+                  "reviews", "review_likes", "bookmarks", "highlights",
+                  "notifications", "seed_lock"]:
+        conn.execute(f"DELETE FROM {table}")
+    conn.commit()
+    conn.close()
 
 
 # ---------- USERS ----------
@@ -620,7 +667,7 @@ def dashboard_stats():
     conn = get_conn()
     c = conn.cursor()
     stats = {}
-    stats["total_users"] = c.execute("SELECT COUNT(*) FROM users WHERE is_admin=0").fetchone()[0]
+    stats["total_users"] = c.execute("SELECT COUNT(*) FROM users").fetchone()[0]
     stats["total_books"] = c.execute("SELECT COUNT(*) FROM books").fetchone()[0]
     stats["total_authors"] = c.execute("SELECT COUNT(*) FROM authors").fetchone()[0]
     stats["total_sales"] = c.execute("SELECT COUNT(*) FROM purchases WHERE payment_status='Success'").fetchone()[0]

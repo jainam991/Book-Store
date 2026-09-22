@@ -72,12 +72,24 @@ def _make_pdf(path, title, author, pages=8):
     doc.close()
 
 
+def _get_or_create_author(name, bio):
+    existing = db.get_author_by_name(name)
+    if existing:
+        return existing["author_id"]
+    return db.add_author(name, bio)
+
+
 def seed_if_empty():
     os.makedirs(BOOKS_DIR, exist_ok=True)
     os.makedirs(COVERS_DIR, exist_ok=True)
 
     if db.list_books(status=None):
         return  # already seeded
+
+    # Atomic guard: if two sessions race here on a cold start, only one
+    # of them wins this lock — the other backs off instead of double-seeding.
+    if not db.try_acquire_seed_lock():
+        return
 
     demo_books = [
         ("The Clockwork Garden", "Amara Voss", "Sci-Fi", 0.0, "#6C5CE7"),
@@ -91,7 +103,7 @@ def seed_if_empty():
     categories = {c["name"]: c["category_id"] for c in db.list_categories()}
 
     for title, author_name, cat_name, price, color in demo_books:
-        author_id = db.add_author(author_name, f"{author_name} is a demo author bio for sample purposes.")
+        author_id = _get_or_create_author(author_name, f"{author_name} is a demo author bio for sample purposes.")
         cat_id = categories.get(cat_name)
         safe = title.lower().replace(" ", "_").replace("'", "")
         pdf_path = os.path.join(BOOKS_DIR, f"{safe}.pdf")

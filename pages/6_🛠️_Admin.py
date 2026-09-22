@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import db
 import utils
+import seed_demo
 from styles import APP_CSS
 
 st.set_page_config(page_title="Admin — Inkwell", page_icon="🛠️", layout="wide")
@@ -29,8 +30,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tab_dash, tab_books, tab_authors, tab_users, tab_promo = st.tabs(
-    ["📊 Dashboard", "📚 Manage Books", "✍️ Authors & Categories", "👥 Users", "📣 Promotions"])
+tab_dash, tab_books, tab_authors, tab_users, tab_promo, tab_danger = st.tabs(
+    ["📊 Dashboard", "📚 Manage Books", "✍️ Authors & Categories", "👥 Users", "📣 Promotions", "⚠️ Danger Zone"])
 
 # ---------------- DASHBOARD ----------------
 with tab_dash:
@@ -192,3 +193,20 @@ with tab_promo:
     if st.button("Send to all users", type="primary"):
         db.broadcast_notification(ntitle, nmsg, ntype)
         st.success("Broadcast sent!")
+
+# ---------------- DANGER ZONE ----------------
+with tab_danger:
+    st.markdown("### ⚠️ Reset & reseed catalog")
+    st.caption(
+        "Fixes duplicated demo data (e.g. books/authors/notifications appearing "
+        "twice from a startup race condition in an earlier version). This wipes "
+        "**books, authors, purchases, library entries, wishlists, reviews, "
+        "bookmarks, highlights, and notifications**, then regenerates the 6 clean "
+        "demo books. User accounts and categories are kept."
+    )
+    confirm = st.checkbox("I understand this deletes catalog & activity data and can't be undone.")
+    if st.button("🧹 Reset & reseed now", type="primary", disabled=not confirm):
+        db.factory_reset_catalog()
+        seed_demo.seed_if_empty()
+        st.success("Catalog reset and reseeded cleanly.")
+        st.rerun()

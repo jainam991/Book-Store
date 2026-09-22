@@ -15,7 +15,24 @@ user = st.session_state.user
 book_id = st.session_state.get("open_book_id")
 
 if not book_id:
-    st.info("Pick a book from Home or your Library to start reading.")
+    st.info("Pick a book to start reading:")
+    entries = db.get_library(user["user_id"])
+    if not entries:
+        st.write("Your library is empty.")
+        if st.button("📚 Browse books on Home"):
+            st.switch_page("app.py")
+    else:
+        cols = st.columns(4)
+        for i, e in enumerate(entries):
+            with cols[i % 4]:
+                with st.container(border=True):
+                    if e.get("cover_image"):
+                        st.image(e["cover_image"], use_container_width=True)
+                    st.markdown(f"**{e['title']}**")
+                    st.caption(f"{e['progress']}% read")
+                    if st.button("Open", key=f"pick_{e['book_id']}", use_container_width=True):
+                        st.session_state.open_book_id = e["book_id"]
+                        st.rerun()
     st.stop()
 
 book = db.get_book(book_id)
