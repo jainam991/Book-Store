@@ -12,12 +12,7 @@ if st.session_state.get("user") is None:
 
 user = st.session_state.user
 
-st.markdown("""
-<div class="hero-banner">
-    <h1>⭐ Ratings & Reviews</h1>
-    <p>Share your thoughts on books you've read.</p>
-</div>
-""", unsafe_allow_html=True)
+st.markdown("""<div class="hero-banner"><h1>⭐ Ratings & Reviews</h1><p>Share your thoughts on books you've read.</p></div>""", unsafe_allow_html=True)
 
 books = db.list_books()
 titles = {b["book_id"]: f"{b['title']} — {b.get('author_name') or 'Unknown'}" for b in books}

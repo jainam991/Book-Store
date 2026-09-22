@@ -38,9 +38,14 @@ html, body, [class*="css"] { font-family: 'Inter', 'Segoe UI', sans-serif; }
 
 .hero-banner {
   background: linear-gradient(120deg, #6C5CE7 0%, #A78BFA 60%, #F0ABFC 100%);
-  border-radius: 20px; padding: 28px 32px; color: white; margin-bottom: 1.4rem;
+  border-radius: 20px; padding: 28px 32px; margin-bottom: 1.4rem;
+  min-height: 40px;
 }
-.hero-banner h1 { margin: 0; font-size: 1.9rem; }
+.hero-banner h1, .hero-banner p, .hero-banner * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+.hero-banner h1 { margin: 0; font-size: 1.9rem; font-weight: 800; }
 .hero-banner p { opacity: 0.92; margin-top: 6px; }
 
 .metric-card {

@@ -12,12 +12,7 @@ if st.session_state.get("user") is None:
 
 user = st.session_state.user
 
-st.markdown("""
-<div class="hero-banner">
-    <h1>🛒 Purchase History</h1>
-    <p>Every transaction, in one place.</p>
-</div>
-""", unsafe_allow_html=True)
+st.markdown('<div class="hero-banner"><h1>🛒 Purchase History</h1><p>Every transaction, in one place.</p></div>', unsafe_allow_html=True)
 
 # ---------------- CHECKOUT FLOW ----------------
 checkout_id = st.session_state.get("checkout_book_id")

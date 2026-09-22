@@ -12,12 +12,7 @@ if st.session_state.get("user") is None:
 
 user = st.session_state.user
 
-st.markdown("""
-<div class="hero-banner">
-    <h1>📥 My Library</h1>
-    <p>Continue reading, track progress, and manage your wishlist.</p>
-</div>
-""", unsafe_allow_html=True)
+st.markdown('<div class="hero-banner"><h1>📥 My Library</h1><p>Continue reading, track progress, and manage your wishlist.</p></div>', unsafe_allow_html=True)
 
 tab_lib, tab_wish = st.tabs(["📚 My Books", "🤍 Wishlist"])
 

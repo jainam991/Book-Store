@@ -14,12 +14,7 @@ if "user" not in st.session_state:
 
 
 def login_ui():
-    st.markdown("""
-    <div class="hero-banner">
-        <h1>📚 Inkwell</h1>
-        <p>Your entire library — PDF & EPUB — in one beautifully designed app.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown('<div class="hero-banner"><h1>📚 Inkwell</h1><p>Your entire library — PDF & EPUB — in one beautifully designed app.</p></div>', unsafe_allow_html=True)
 
     tab_login, tab_signup = st.tabs(["🔑 Log in", "🆕 Create account"])
 
@@ -124,12 +119,7 @@ def main_app():
         st.caption("Use the pages menu above ⬆️ to navigate: Browse, Reader, Library, "
                    "Purchases, Notifications, Reviews" + (", Admin" if user["is_admin"] else ""))
 
-    st.markdown("""
-    <div class="hero-banner">
-        <h1>📚 Discover your next read</h1>
-        <p>Search, sample, buy, and read — all in one place.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown('<div class="hero-banner"><h1>📚 Discover your next read</h1><p>Search, sample, buy, and read — all in one place.</p></div>', unsafe_allow_html=True)
 
     search_col, cat_col = st.columns([3, 1])
     with search_col:

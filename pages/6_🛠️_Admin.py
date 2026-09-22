@@ -23,12 +23,7 @@ COVERS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "c
 os.makedirs(BOOKS_DIR, exist_ok=True)
 os.makedirs(COVERS_DIR, exist_ok=True)
 
-st.markdown("""
-<div class="hero-banner">
-    <h1>🛠️ Admin Panel</h1>
-    <p>Dashboard, catalog management, users & sales — the control room.</p>
-</div>
-""", unsafe_allow_html=True)
+st.markdown('<div class="hero-banner"><h1>🛠️ Admin Panel</h1><p>Dashboard, catalog management, users & sales — the control room.</p></div>', unsafe_allow_html=True)
 
 tab_dash, tab_books, tab_authors, tab_users, tab_promo, tab_danger = st.tabs(
     ["📊 Dashboard", "📚 Manage Books", "✍️ Authors & Categories", "👥 Users", "📣 Promotions", "⚠️ Danger Zone"])
@@ -188,7 +183,8 @@ with tab_promo:
     st.markdown("### 📣 Send a broadcast notification")
     st.caption("Goes out to every user — use for promotional offers, price drops, or announcements.")
     ntype = st.selectbox("Type", ["promo", "price_drop", "recommendation", "author_update", "system"])
-    ntitle = st.text_input("Title", "🎉 Limited-time offer!")
+    st.caption("An icon is added automatically based on type — no need to put an emoji in the title yourself.")
+    ntitle = st.text_input("Title", "Limited-time offer!")
     nmsg = st.text_area("Message", "20% off all Sci-Fi books this weekend only.")
     if st.button("Send to all users", type="primary"):
         db.broadcast_notification(ntitle, nmsg, ntype)

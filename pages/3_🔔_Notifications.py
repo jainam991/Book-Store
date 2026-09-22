@@ -12,12 +12,7 @@ if st.session_state.get("user") is None:
 
 user = st.session_state.user
 
-st.markdown("""
-<div class="hero-banner">
-    <h1>🔔 Notifications</h1>
-    <p>New releases, recommendations, price drops, promos, purchases, downloads, reminders & author updates.</p>
-</div>
-""", unsafe_allow_html=True)
+st.markdown('<div class="hero-banner"><h1>🔔 Notifications</h1><p>New releases, recommendations, price drops, promos, purchases, downloads, reminders & author updates.</p></div>', unsafe_allow_html=True)
 
 ICONS = {
     "new_release": "📚", "recommendation": "✨", "price_drop": "💸", "promo": "🎁",
@@ -58,6 +53,6 @@ st.markdown("#### ⏰ Reading reminders")
 st.caption("Simulated here — in production, hook this up to a scheduled job (e.g. cron / Cloud Scheduler) "
            "that calls `db.push_notification()` daily for users who haven't opened a book recently.")
 if st.button("Send me a test reading reminder"):
-    db.push_notification(user["user_id"], "Time to read! ⏰",
+    db.push_notification(user["user_id"], "Time to read!",
                           "You haven't opened a book in a while — pick up where you left off.", "reminder")
     st.success("Sent — refresh to see it above.")

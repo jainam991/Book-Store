@@ -242,7 +242,7 @@ def create_user(name, email, phone, password):
             (name, email, phone, hash_password(password), now()),
         )
         conn.commit()
-        push_notification(get_user_by_email(email)["user_id"], "Welcome! 🎉",
+        push_notification(get_user_by_email(email)["user_id"], "Welcome!",
                            f"Hi {name}, welcome to the bookstore.", "system")
         return True, "Account created."
     except sqlite3.IntegrityError:
@@ -322,7 +322,7 @@ def add_book(title, author_id, category_id, description, cover_image, file_url,
     bid = cur.lastrowid
     conn.close()
     # notify all users of new release
-    broadcast_notification("New release! 📚", f"'{title}' just landed in the store.", "new_release")
+    broadcast_notification("New release!", f"'{title}' just landed in the store.", "new_release")
     return bid
 
 
@@ -462,7 +462,7 @@ def make_purchase(user_id, book_id, amount):
     conn.commit()
     conn.close()
     book = get_book(book_id)
-    push_notification(user_id, "Purchase confirmed ✅",
+    push_notification(user_id, "Purchase confirmed",
                        f"You bought '{book['title']}' for ${amount:.2f}. Txn: {txn_id}", "purchase")
     add_to_library(user_id, book_id)
     return txn_id
