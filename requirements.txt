@@ -1,0 +1,9 @@
+streamlit>=1.38
+PyMuPDF>=1.24
+ebooklib>=0.18
+beautifulsoup4>=4.12
+gTTS>=2.5
+deep-translator>=1.11
+requests>=2.31
+lxml>=5.2
+Pillow>=10.0
